@@ -1,0 +1,41 @@
+name: Build and Release Unsigned APK
+
+on:
+  push:
+    branches:
+      - main  # Change this to your default branch
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repository
+      - uses: actions/checkout@v3
+
+      # Setup Java and Gradle
+      - name: Set up JDK
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'zulu'
+          java-version: '17'
+
+      # Cache Gradle dependencies
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: ~/.gradle/caches
+          key: gradle-dependencies-${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-dependencies-${{ runner.os }}-gradle-
+      
+      # Install dependencies and build the app
+      - name: Build APK
+        run: ./gradlew assembleRelease
+
+      # Upload the unsigned APK as an artifact
+      - name: Upload Unsigned APK
+        uses: actions/upload-artifact@v3
+        with:
+          name: unsigned-release-apk
+          path: app/build/outputs/apk/release/app-release-unsigned.apk
