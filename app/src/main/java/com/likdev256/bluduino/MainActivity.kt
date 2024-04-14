@@ -8,7 +8,6 @@ import android.bluetooth.BluetoothManager
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.result.contract.ActivityResultContracts
@@ -177,7 +176,7 @@ fun HomeScreen(state: BluetoothUiState) {
             )
             JoyStick(joystickColor, MaterialTheme.colorScheme.primary) { xOffset, yOffset ->
                 // Send joystick movement
-                    val message = "${xOffset.toInt()}+${yOffset.toInt()}"
+                    val message = "${xOffset.toInt()},${yOffset.toInt()}"
                     bluetoothViewModel.sendMessage(message)
             }
         }
